@@ -6,7 +6,7 @@
 # active training
 **installation**
 ```bash
-git clone 
+git clone git@github.com:zkoladzl/balque.git
 ```
 **data selection**
 ```bash
