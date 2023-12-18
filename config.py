@@ -2,7 +2,6 @@ import argparse
 import torchvision.transforms as transforms
 import datasets.datasets as datasets
 import torch
-print(torch.__version__)
 import numpy as np
 import model.resnet as resnet
 def get_config(base_path):
@@ -41,7 +40,7 @@ def get_config(base_path):
     parser.add_argument('--min_lr', type = float, default = 0.001)
     parser.add_argument('--weight_decay', type = float, default = 0.00005)
     parser.add_argument('--optimizer_type', type = str, default = 'adam')
-    parser.add_argument('--query_cnts', type = int, default = 2)
+    parser.add_argument('--query_cnts', type = int, default = 10)
     parser.add_argument('--query_batch_size', type = int, default = 2000)
     parser.add_argument('--training_batch_size', type = int, default = 32)
     parser.add_argument('--test_batch_size', type = int, default = 128)

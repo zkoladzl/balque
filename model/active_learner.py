@@ -68,20 +68,17 @@ class ActiveLearner():
     def train_classifier(self, model, epoches):
         model = model.cuda()
         model.train()
-        training_size = len(self.train_loader.sampler)
         optimizer = None
         if self.optimizer_type == 'adam':
             optimizer = torch.optim.Adam(model.parameters(), lr = self.lr, weight_decay=self.weight_decay)
         max_train_acc = 0.
         for epoche in range(epoches):
-            loss_sum = torch.tensor(0.)
             for iter, inputs in enumerate(self.train_loader):
                 datas, labels, indice = inputs
                 datas, labels = datas.cuda(), labels.cuda()
                 results = model(datas)
                 optimizer.zero_grad()
                 loss = self.loss_function(results['outputs'], labels)
-                loss_sum += loss.data.cpu()
                 loss.backward()
                 optimizer.step()
             if (epoche + 1)%20 == 0:
@@ -92,8 +89,11 @@ class ActiveLearner():
                     max_train_acc = train_acc
                     self.current_max_train_acc, self.current_optimal_test_acc = train_acc, test_acc
                     torch.save(model.state_dict(), self.current_max_train_acc_model_path)
-                print('epoch:{}, loss:{}, train acc:{}, test acc:{}'.format(epoche + 1, loss_sum/training_size,train_acc, self.current_optimal_test_acc))
+                print('epoch:{}, train acc:{}, test acc:{}'.format(epoche + 1, train_acc, self.current_optimal_test_acc))
                 model.train()
+                if self.args.early_stop and max_train_acc >= 0.995:
+                    print('trigger eraly stop')
+                    break
         print('max train acc:{}, test acc:{}'.format(max_train_acc, self.current_optimal_test_acc))
         return model
     def store_queried_indice(self, selected_in_distribution_indice, selected_out_distribution_indice):

@@ -6,26 +6,26 @@ import numpy as np
 import copy
 import os
 torch.cuda.set_device(0)
-base_path = "/mnt/sda/hyc/open_source/"
+base_path = "/results/"
 args = config.get_config(base_path)
 
 # set sampling methods
 query_functions = [
+    alpha_mix_sampling.alpha_mix_sampling,
     forgetting_events_sampling.forgetting_events_sampling_V4,
     badge.badge_sampling,
     core_set.core_set_sampling,
     random_sampling.random_sampling,
     entropy_sampling.entropy_sampling,
-    alpha_mix_sampling.alpha_mix_sampling
 ]
-# set str name of sampling methods
+#  str name of sampling methods
 query_names = [
+    'alpha_mix_sampling',
     'forgetting_events_sampling_V4',
     'badge_sampling',
     'core_set',
     'random_sampling',
     'entropy_sampling',
-    'alpha_mix_sampling'
 ]
 
 path = copy.deepcopy(args.results_path)
@@ -36,7 +36,7 @@ for i in range(len(query_functions)):
     args.results_path = dir + args.data_name + '_' + query_names[i] + "_"
     args.sampling_name = query_names[i]
     learner = active_learner.ActiveLearner(args, query_functions[i])
-    learner.adversarial_perturbations = None;learner.active_train()
+    learner.active_train()
     os.remove(learner.current_max_train_acc_model_path)
     print(query_names[i] + ":\n train acc:{}, \n test_acc:{}".format(
         learner.train_acc, learner.test_acc)

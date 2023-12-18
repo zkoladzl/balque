@@ -3,7 +3,6 @@ import torch.utils.data as data
 import torch
 import numpy as np
 import strategy.utils as utils
-import numpy as np
 def forgetting_events_sampling_common(active_learner, model, queried_indice, unqueried_indice, batch_size, interval):
     train_loader = active_learner.train_loader
     unlabeled_sampler = utils.CustomSquentialSampler(unqueried_indice.tolist())
@@ -25,7 +24,7 @@ def forgetting_events_sampling_common(active_learner, model, queried_indice, unq
             loss.backward()
             optimizer.step()
         
-        if (epoche + 1)%10 == 0:
+        if (epoche + 1)%20 == 0:
             model.eval()
             train_acc, test_acc = active_learner.acc_evaluation(model, train = True), active_learner.acc_evaluation(model)
             if(train_acc >= max_train_acc):

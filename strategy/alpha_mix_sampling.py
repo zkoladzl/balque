@@ -69,7 +69,7 @@ def alpha_mix_sampling(active_learner, model, queried_indice, unqueried_indice, 
     unlabeled_probs_distribution = utils.predict_prob(model, unlabeled_loader, active_learner.args.in_distribution_num_classes)[unqueried_indice.tolist()]
     unlabeled_probs, pseudo_labels= torch.max(unlabeled_probs_distribution, dim = 1)
     if active_learner.args.data_name == 'SVHN':true_labels = np.array(active_learner.args.train_dataset.dataset.labels)
-    else:true_labels = np.array(active_learner.args.train_dataset.dataset.train_labels)
+    else:true_labels = np.array(active_learner.args.train_dataset.dataset.targets)
     all_sampler = utils.CustomSquentialSampler(queried_indice + unqueried_indice.tolist())
     all_loader = data.DataLoader(active_learner.pool_dataset, batch_size = active_learner.test_batch_size, sampler = all_sampler,num_workers=4)
     all_embedding = utils.get_embedding(model, all_loader)
